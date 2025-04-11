@@ -15,7 +15,7 @@ public class ELiteratureDbContext : DbContext
     {
     }
     
-    public DbSet<Writer> Writers { get; set; }
+    public DbSet<Writer?> Writers { get; set; }
     
     public DbSet<Publication> Publications { get; set; }
     
