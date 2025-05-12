@@ -25,9 +25,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidateAudience = true,
+            ValidateAudience = false,
             ValidateLifetime = true,
-            ValidateIssuerSigningKey = true
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Convert.FromBase64String("R1cnMNZ4VmqXy968Bv52vCIY3iS4+VicrY1YvEAHGts="))
         };
     });
 builder.Services.AddAuthorization();
@@ -49,7 +51,7 @@ app.UseHttpsRedirection();
 //await seeder.SeedAsync();
 
 app.UseCors(policy =>
-    policy.WithOrigins("http://localhost:3000")
+    policy.WithOrigins("http://localhost:4200")
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials());
