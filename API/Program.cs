@@ -1,4 +1,7 @@
 using API.Configs;
+using API.Graph.Queries;
+using API.Graph.Types;
+using API.Graph.Types.Enums;
 using Core.Interfaces.Services;
 using Core.Services;
 using Data.Repositories;
@@ -8,6 +11,21 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddStorage(builder.Configuration);
+builder.Services.AddGraphQLServer()
+    .AddQueryType<AuthorQuery>()
+    .AddType<AuthorType>()
+    .AddType<PublicationType>()
+    .AddType<LiteratureDirectionType>()
+    .AddType<OccupationType>()
+    .AddType<OrganizationType>()
+    .AddType<PhotoType>()
+    .AddType<PublicationPhotoType>()
+    .AddType<TagType>()
+    .AddType<AuthorPhotoType>()
+    .AddType<PublicationTypeEnumType>()
+    .AddType<PhotoTypeEnumType>()
+    .AddProjections();
+
 builder.Services.AddControllers(options =>
 {
     options.RespectBrowserAcceptHeader = true;
@@ -15,7 +33,7 @@ builder.Services.AddControllers(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddLogging();
-builder.Services.AddScoped<IWritersRepository, WritersRepository>();
+builder.Services.AddScoped<IAuthorsRepository, AuthorsRepository>();
 builder.Services.AddScoped<IWritersService, WritersService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -47,16 +65,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseHttpsRedirection();
-//var seeder = new DatabaseSeeder(app.Services);
-//await seeder.SeedAsync();
+/*var seeder = new DatabaseSeeder(app.Services);
+await seeder.SeedAsync();*/
 
 app.UseCors(policy =>
-    policy.WithOrigins("http://localhost:4200")
+    policy.WithOrigins("http://localhost:4200", "https://localhost:5003")
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials());
 app.UseSerilogRequestLogging();
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapGraphQL();
+app.MapGet("/playground", () => Results.Redirect("/graphql"));
 app.MapControllers();
 app.Run();
