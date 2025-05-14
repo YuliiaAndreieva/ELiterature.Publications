@@ -12,7 +12,7 @@ public class LiteratureDirection
     
     public uint? EndCentury { get; set; }
     
-    public IEnumerable<Writer> Writers { get; set; } = new List<Writer>();
+    public IEnumerable<Author> Authors { get; set; } = new List<Author>();
     
     public IEnumerable<Publication> Publications { get; set; } = new List<Publication>();
 }

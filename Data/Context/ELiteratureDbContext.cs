@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
-
+using Tag = Data.Entities.Tag;
 namespace Data.Context;
 
 public class ELiteratureDbContext : DbContext 
@@ -15,7 +15,7 @@ public class ELiteratureDbContext : DbContext
     {
     }
     
-    public DbSet<Writer?> Writers { get; set; }
+    public DbSet<Author> Authors { get; set; }
     
     public DbSet<Publication> Publications { get; set; }
     

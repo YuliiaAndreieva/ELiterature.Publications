@@ -5,58 +5,58 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Data.Repositories;
 
-public class WritersRepository : IWritersRepository
+public class AuthorsRepository : IAuthorsRepository
 {
     private readonly ELiteratureDbContext _dbContext;
-    public WritersRepository(ELiteratureDbContext dbContext)
+    public AuthorsRepository(ELiteratureDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public Writer Create(
-        Writer entity)
+    public Author Create(
+        Author entity)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Writer> CreateAsync(
-        Writer entity)
+    public Task<Author> CreateAsync(
+        Author entity)
     {
         throw new NotImplementedException();
     }
 
     public Task CreateRangeAsync(
-        IEnumerable<Writer> items)
+        IEnumerable<Author> items)
     {
         throw new NotImplementedException();
     }
 
-    public EntityEntry<Writer> Update(
-        Writer entity)
+    public EntityEntry<Author> Update(
+        Author entity)
     {
         throw new NotImplementedException();
     }
 
     public void UpdateRange(
-        IEnumerable<Writer> items)
+        IEnumerable<Author> items)
     {
         throw new NotImplementedException();
     }
 
     public void Delete(
-        Writer entity)
+        Author entity)
     {
         throw new NotImplementedException();
     }
 
     public void DeleteRange(
-        IEnumerable<Writer> items)
+        IEnumerable<Author> items)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<Writer?> GetWriterAsync(long id)
+    public async Task<Author?> GetAuthorAsync(long id)
     {
-        return await _dbContext.Writers.Where(w => w.Id == id).FirstOrDefaultAsync();
+        return await _dbContext.Authors.Where(w => w.Id == id).FirstOrDefaultAsync();
     }
 }

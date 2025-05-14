@@ -16,7 +16,7 @@ public class Publication
     
     public required string Text { get; set; }
 
-    public IEnumerable<Writer> Writers { get; set; } = new List<Writer>();
+    public IEnumerable<Author> Authors { get; set; } = new List<Author>();
 
     public IEnumerable<LiteratureDirection> LiteratureDirection { get; set; } = new List<LiteratureDirection>();
 
