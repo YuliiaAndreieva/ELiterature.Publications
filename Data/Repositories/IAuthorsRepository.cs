@@ -4,5 +4,7 @@ namespace Data.Repositories;
 
 public interface IAuthorsRepository
 {
-    Task<Author?> GetAuthorAsync(long id);
+    IQueryable<Author> GetAuthorByIdAsync(long id);
+
+    IQueryable<Author> GetAllAsync();
 }

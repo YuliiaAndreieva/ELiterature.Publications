@@ -1,5 +1,6 @@
 ﻿using Data.Context;
 using Data.Entities;
+using Data.Repositories;
 
 namespace API.Graph.Queries;
 
@@ -7,11 +8,9 @@ public class AuthorQuery
 {
     [UseProjection]
     [GraphQLName("authors")]
-    public IQueryable<Author> GetAuthors([Service]ELiteratureDbContext dbContext) => dbContext.Authors!;
+    public IQueryable<Author> GetAuthors([Service]IAuthorsRepository repository) => repository.GetAllAsync();
     
+    [UseProjection]
     [GraphQLName("getAuthor")]
-    public Author GetAuthor([Service]ELiteratureDbContext dbContext, long id)
-    {
-        return dbContext.Authors.FirstOrDefault(w => w.Id == id)!;
-    }
+    public IQueryable<Author> GetAuthor([Service]IAuthorsRepository repository, long id) => repository.GetAuthorByIdAsync(id);
 }

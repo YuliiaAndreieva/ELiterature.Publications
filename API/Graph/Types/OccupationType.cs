@@ -7,7 +7,6 @@ public class OccupationType : ObjectType<Occupation>
     protected override void Configure(IObjectTypeDescriptor<Occupation> descriptor)
     {
         descriptor.Field(o => o.Id).Type<IdType>();
-        //descriptor.Field(o => o.Id).Type<IdType>();
         descriptor.Field(o => o.Title).Type<NonNullType<StringType>>();
 
         descriptor.Field(o => o.Authors)

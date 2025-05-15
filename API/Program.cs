@@ -2,8 +2,6 @@ using API.Configs;
 using API.Graph.Queries;
 using API.Graph.Types;
 using API.Graph.Types.Enums;
-using Core.Interfaces.Services;
-using Core.Services;
 using Data.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -34,7 +32,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddLogging();
 builder.Services.AddScoped<IAuthorsRepository, AuthorsRepository>();
-builder.Services.AddScoped<IWritersService, WritersService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

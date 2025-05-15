@@ -7,7 +7,6 @@ public class PublicationType : ObjectType<Publication>
 {
     protected override void Configure(IObjectTypeDescriptor<Publication> descriptor)
     {
-        descriptor.Name("Publication");
         descriptor.Field(p => p.Id).Type<IdType>();
         descriptor.Field(p => p.Title).Type<NonNullType<StringType>>();
         descriptor.Field(p => p.Description).Type<NonNullType<StringType>>();

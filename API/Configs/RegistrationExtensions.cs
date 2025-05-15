@@ -16,7 +16,9 @@ public static class RegistrationExtensions
         serviceCollection.AddDbContext<ELiteratureDbContext>(options =>
         {
             options.UseSqlServer(connectionString)
-                .LogTo(Console.WriteLine, LogLevel.Information);
+                .LogTo(Console.WriteLine, LogLevel.Information)
+                .EnableSensitiveDataLogging()
+                .EnableDetailedErrors();
         });
     }
 }

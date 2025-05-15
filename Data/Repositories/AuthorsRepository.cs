@@ -13,50 +13,14 @@ public class AuthorsRepository : IAuthorsRepository
         _dbContext = dbContext;
     }
 
-    public Author Create(
-        Author entity)
+    public IQueryable<Author> GetAuthorByIdAsync(long id)
     {
-        throw new NotImplementedException();
+        return _dbContext.Authors
+            .Where(w => w.Id == id);
     }
-
-    public Task<Author> CreateAsync(
-        Author entity)
+    
+    public IQueryable<Author> GetAllAsync()
     {
-        throw new NotImplementedException();
-    }
-
-    public Task CreateRangeAsync(
-        IEnumerable<Author> items)
-    {
-        throw new NotImplementedException();
-    }
-
-    public EntityEntry<Author> Update(
-        Author entity)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void UpdateRange(
-        IEnumerable<Author> items)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Delete(
-        Author entity)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void DeleteRange(
-        IEnumerable<Author> items)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Author?> GetAuthorAsync(long id)
-    {
-        return await _dbContext.Authors.Where(w => w.Id == id).FirstOrDefaultAsync();
+        return _dbContext.Authors;
     }
 }
