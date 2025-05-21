@@ -8,7 +8,7 @@ public class AuthorQuery
 {
     [UseProjection]
     [GraphQLName("authors")]
-    public IQueryable<Author> GetAuthors([Service]IAuthorsRepository repository) => repository.GetAllAsync();
+    public IQueryable<Author> GetAllAuthors([Service]IAuthorsRepository repository) => repository.GetAllAsync();
     
     [UseProjection]
     [GraphQLName("getAuthor")]
