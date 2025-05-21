@@ -49,27 +49,27 @@ public class Seeder
             DateOfDeath = new DateOnly(1937, 10, 24),
             Photos = new List<AuthorPhoto>
             {
-                new AuthorPhoto
+                new AuthorPhoto()
                 {
-                    PhotoUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fuk.wikiquote.org%2Fwiki%2F%25D0%25A1%25D0%25B5%25D0%25BC%25D0%25B5%25D0%25BD%25D0%25BA%25D0%25BE_%25D0%259C%25D0%25B8%25D1%2585%25D0%25B0%25D0%25B9%25D0%25BB%25D1%258C_%25D0%2592%25D0%25B0%25D1%2581%25D0%25B8%25D0%25BB%25D1%258C%25D0%25BE%25D0%25B2%25D0%25B8%25D1%2587&psig=AOvVaw3Nda-0uVF4JS5yQwALtrDm&ust=1744027944041000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCNCM78Kww4wDFQAAAAAdAAAAABAE",
-                    Type = PhotoType.MainPhoto
+                    Type = PhotoType.MainPhoto,
+                    PhotoUrl = "https://res.cloudinary.com/dldm4ojsk/image/upload/v1747287219/fvh7da0xyr8pkzyc9zmm.jpg",
                 },
                 new AuthorPhoto
                 {
-                    PhotoUrl = "https://uk.wikipedia.org/wiki/%D0%9C%D0%B8%D1%85%D0%B0%D0%B9%D0%BB%D1%8C_%D0%A1%D0%B5%D0%BC%D0%B5%D0%BD%D0%BA%D0%BE#/media/%D0%A4%D0%B0%D0%B9%D0%BB:%D0%A1%D0%B5%D0%BC%D0%B5%D0%BD%D0%BA%D0%BE_%D0%9C3.jpg",
                     Type = PhotoType.SliderPhoto,
+                    PhotoUrl = "https://res.cloudinary.com/dldm4ojsk/image/upload/v1747287908/mf1je5jcbeydgyljmcvg.jpg",
                     Quote = "Я хтів би знать — що є\u00a0життя?\u2028Хто засвітив на небі зорі?\u2028В натхненному бурхливоморі\u2028Сумує людське почуття..."
                 },
                 new AuthorPhoto
                 {
-                    PhotoUrl = "https://uk.wikipedia.org/wiki/%D0%9C%D0%B8%D1%85%D0%B0%D0%B9%D0%BB%D1%8C_%D0%A1%D0%B5%D0%BC%D0%B5%D0%BD%D0%BA%D0%BE#/media/%D0%A4%D0%B0%D0%B9%D0%BB:%D0%A1%D0%B5%D0%BC%D0%B5%D0%BD%D0%BA%D0%BE_%D0%9C5.jpg",
                     Type = PhotoType.SliderPhoto,
+                    PhotoUrl = "https://res.cloudinary.com/dldm4ojsk/image/upload/v1747287908/tnatwpybnepifympgv6e.jpg",
                     Quote = "Я не умру від смерти —\nя умру від життя.\nУмиратиму — життя буде мерти,\nне маятиме стяг."
                 },
                 new AuthorPhoto
                 {
-                    PhotoUrl = "https://uk.wikipedia.org/wiki/%D0%9C%D0%B8%D1%85%D0%B0%D0%B9%D0%BB%D1%8C_%D0%A1%D0%B5%D0%BC%D0%B5%D0%BD%D0%BA%D0%BE#/media/%D0%A4%D0%B0%D0%B9%D0%BB:%D0%A1%D0%B5%D0%BC%D0%B5%D0%BD%D0%BA%D0%BE_%D0%9C.JPG",
                     Type = PhotoType.SliderPhoto,
+                    PhotoUrl = "https://res.cloudinary.com/dldm4ojsk/image/upload/v1747287908/ao5cbrmdebl1ecvyn8p0.jpg",
                     Quote = "\t\nЯ не хочу з тобою говорити. Ти підносиш мені засмальцьованого «Кобзаря» й кажеш: ось моє мистецтво. Чоловіче, мені за тебе соромно... Ти підносиш мені заялозені мистецькі «ідеї», й мене канудить"
                 }
             },
@@ -88,11 +88,11 @@ public class Seeder
             },
             DateOfBirth = new DateOnly(1895, 5, 10),
             DateOfDeath = new DateOnly(1917, 3, 15),
-            Photos = new List<AuthorPhoto>
+            Photos = new List<AuthorPhoto>()
             {
-                new AuthorPhoto
+                new AuthorPhoto()
                 {
-                    PhotoUrl = "https://korydor.in.ua/wp-content/uploads/2019/06/1.Vasil-Semenko-na-tli-vlasnoi-kartini-Misto-1913-14-2-e1561114910579.jpg",
+                    PhotoUrl = "https://res.cloudinary.com/dldm4ojsk/image/upload/v1747337631/authors/p1jchu2ximpkvucennmq.jpg",
                     Type = PhotoType.MainPhoto
                 }
             },
@@ -112,21 +112,15 @@ public class Seeder
             },
             DateOfBirth = new DateOnly(1896, 7, 22),
             DateOfDeath = new DateOnly(1939, 5, 15),
-            Photos = new List<AuthorPhoto>
+            Photos = new List<AuthorPhoto>()
             {
-                new AuthorPhoto
+                new AuthorPhoto()
                 {
-                    PhotoUrl = "https://esu.com.ua/images/article_images/K/Kovghun%20Pavlo%20Maksimovich.jpg",
-                    Type = PhotoType.MainPhoto
-                },
-                new AuthorPhoto
-                {
-                    PhotoUrl = "https://vikna.if.ua/assets/gallery/2017/01/16/66368/kovgun15.jpg",
-                    Type = PhotoType.SliderPhoto,
-                    Quote = "Мистецтво має бути сміливим і новаторським."
+                    PhotoUrl = "https://res.cloudinary.com/dldm4ojsk/image/upload/v1747337560/authors/xnjon9isgubdwv0j544r.jpg",
+                    Type = PhotoType.MainPhoto,
                 }
             },
-            LiteratureDirection = new List<LiteratureDirection> { futurism }
+            LiteratureDirection = new List<LiteratureDirection> { futurism },
         };
 
         var kveroFuturists = new Organization
@@ -146,13 +140,11 @@ public class Seeder
             EndDate = new DateOnly(1925, 12, 31),
             Authors = new List<Author> { mykhailoSemenko }
         };
-
+        
         _dbContext.Authors.AddRange(mykhailoSemenko, vasylSemenko, pavloKovzhun);
         _dbContext.Organizations.AddRange(kveroFuturists, aspanfut);
 
         await SeedSymonenkoAsync();
-
-        // Один виклик SaveChangesAsync у кінці
         await _dbContext.SaveChangesAsync();
     }
 
@@ -197,15 +189,18 @@ public class Seeder
             {
                 Title = "Ну скажи, хіба не фантастично",
                 Description = "Вірш про красу природи та фантастичність світу.",
-                PublicationYear = new DateOnly(1960, 1, 1),
+                PublicationYear = new DateOnly(1962, 9, 24),
                 Type = PublicationType.Poem,
                 Text = "Ну скажи, хіба не фантастично,\nЩо у світі тім, де все продажне,\nЩе є душі, що живуть щасливо\nІ сміються дзвінко і ласкаво...",
                 LiteratureDirection = new List<LiteratureDirection> { literatureDirection },
                 Tags = new List<Tag> { tags[0], tags[1], tags[2] },
-                Photos = new List<PublicationPhoto>
+                Photos = new List<PublicationPhoto>()
                 {
-                    new PublicationPhoto { PhotoUrl = "https://i.pinimg.com/736x/fd/48/04/fd48047d564dd0a5770e529da0fdfbfe.jpg", Type = PhotoType.MainPhoto },
-                    new PublicationPhoto { PhotoUrl = "https://i.pinimg.com/736x/fd/48/04/fd48047d564dd0a5770e529da0fdfbfe.jpg", Type = PhotoType.SidePhoto }
+                    new PublicationPhoto()
+                    {
+                        PhotoUrl = "https://res.cloudinary.com/dldm4ojsk/image/upload/v1747336699/mzxipslcetrwkjpbgqix.jpg",
+                        Type = PhotoType.MainPhoto,
+                    }
                 }
             },
             new Publication
@@ -216,7 +211,15 @@ public class Seeder
                 Type = PublicationType.Poem,
                 Text = "Ти знаєш, що ти — людина?\nТи знаєш про це чи ні?\nУсмішка твоя — єдина,\nМука твоя — єдина,\nОчі твої — одні...",
                 LiteratureDirection = new List<LiteratureDirection> { literatureDirection },
-                Tags = new List<Tag> { tags[0], tags[1], tags[3] }
+                Tags = new List<Tag> { tags[0], tags[1], tags[3] },
+                Photos = new List<PublicationPhoto>()
+                {
+                    new PublicationPhoto()
+                    {
+                        PhotoUrl = "https://res.cloudinary.com/dldm4ojsk/image/upload/v1747336699/piyfo3bphpbi4eemx8vl.jpg",
+                        Type = PhotoType.MainPhoto,
+                    }
+                }
             }
         };
 
@@ -232,16 +235,19 @@ public class Seeder
             LiteratureDirection = new List<LiteratureDirection> { literatureDirection },
             Occupations = occupations,
             Organizations = organizations,
-            Photos = new List<AuthorPhoto>
+            Photos = new List<AuthorPhoto>()
             {
-                new AuthorPhoto { PhotoUrl = "https://upload.wikimedia.org/wikipedia/uk/e/ee/%D0%A1%D0%B8%D0%BC%D0%BE%D0%BD%D0%B5%D0%BD%D0%BA%D0%BE.jpg", Type = PhotoType.MainPhoto }
-            }
+                new AuthorPhoto() { Type = PhotoType.MainPhoto, PhotoUrl = "https://res.cloudinary.com/dldm4ojsk/image/upload/v1747335032/wkxbzxedtzfa8ngtzgl5.jpg" },
+                new AuthorPhoto() { Type = PhotoType.SliderPhoto, PhotoUrl = "https://res.cloudinary.com/dldm4ojsk/image/upload/v1747336430/ux3ajdhqe0queuu1oy0v.jpg", Quote = "Україна — це не просто територія, це доля, це життя, це вічне джерело, з якого п’ють усі, хто любить свободу"},
+                new AuthorPhoto() { Type = PhotoType.SliderPhoto, PhotoUrl = "https://res.cloudinary.com/dldm4ojsk/image/upload/v1747337040/aktxj1mfp0fv4txcg5r1.jpg", Quote = "Людина живе не для того, щоб їсти, пити і одягатися, а для того, щоб залишити по собі слід на землі — добрий, світлий, вічний"},
+                new AuthorPhoto() { Type = PhotoType.SliderPhoto, PhotoUrl = "https://res.cloudinary.com/dldm4ojsk/image/upload/v1747337252/authors/merqm9wrstqmu8ujw2f9.jpg", Quote = "Моя Україна — це калина, що цвіте на камені, це пісня, що ллється крізь сльози, це сила, що не зламати ні в’язницями, ні часом"}
+            },
         };
 
         publications[0].Authors = new List<Author> { writer };
         publications[1].Authors = new List<Author> { writer };
 
-        _dbContext.Authors.Add(writer);
         _dbContext.Publications.AddRange(publications);
+        _dbContext.Authors.Add(writer);
     }
 }
