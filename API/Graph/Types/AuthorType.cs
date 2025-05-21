@@ -1,4 +1,5 @@
-﻿using Data.Entities;
+﻿using API.Graph.Resolvers;
+using Data.Entities;
 
 namespace API.Graph.Types;
 
@@ -30,8 +31,9 @@ public class AuthorType : ObjectType<Author>
             });
 
         descriptor.Field(w => w.Biography).Type<StringType>();
-        
-        descriptor.Field(w => w.Publications).Type<NonNullType<ListType<NonNullType<PublicationType>>>>();
+        descriptor.Field(w => w.Publications)
+            .ResolveWith<AuthorResolvers>(r => r.GetPublications(default!, default!))
+            .UsePaging<PublicationType>();
         descriptor.Field(w => w.LiteratureDirection).Type<NonNullType<ListType<NonNullType<LiteratureDirectionType>>>>();
         descriptor.Field(w => w.Occupations).Type<NonNullType<ListType<NonNullType<OccupationType>>>>();
         descriptor.Field(w => w.Organizations).Type<NonNullType<ListType<NonNullType<OrganizationType>>>>();

@@ -22,6 +22,9 @@ builder.Services.AddGraphQLServer()
     .AddType<AuthorPhotoType>()
     .AddType<PublicationTypeEnumType>()
     .AddType<PhotoTypeEnumType>()
+    .AddProjections()
+    .AddFiltering()
+    .AddSorting()
     .AddProjections();
 
 builder.Services.AddControllers(options =>

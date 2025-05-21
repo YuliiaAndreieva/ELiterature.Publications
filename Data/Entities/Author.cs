@@ -16,7 +16,7 @@ public class Author
     
     public string Biography { get; set; } = string.Empty;
 
-    public IEnumerable<Publication> Publications { get; set; } = new List<Publication>();
+    public  ICollection<Publication> Publications { get; set; }
 
     public IEnumerable<LiteratureDirection> LiteratureDirection { get; set; } = new List<LiteratureDirection>();
 
