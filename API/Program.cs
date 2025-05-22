@@ -25,7 +25,15 @@ builder.Services.AddGraphQLServer()
     .AddProjections()
     .AddFiltering()
     .AddSorting()
-    .AddProjections();
+    .AddProjections()
+    .ModifyCostOptions(options =>
+    {
+        options.MaxFieldCost = 1_0000;
+        options.MaxTypeCost = 1_0000;
+        options.EnforceCostLimits = true;
+        options.ApplyCostDefaults = true;
+        options.DefaultResolverCost = 10.0;
+    });
 
 builder.Services.AddControllers(options =>
 {
@@ -65,8 +73,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseHttpsRedirection();
-/*var seeder = new DatabaseSeeder(app.Services);
-await seeder.SeedAsync();*/
+var seeder = new DatabaseSeeder(app.Services);
+await seeder.SeedAsync();
 
 app.UseCors(policy =>
     policy.WithOrigins("http://localhost:4200", "https://localhost:5003")
