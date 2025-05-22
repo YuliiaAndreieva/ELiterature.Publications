@@ -1,4 +1,5 @@
 using API.Configs;
+using API.Graph.Filters;
 using API.Graph.Queries;
 using API.Graph.Types;
 using API.Graph.Types.Enums;
@@ -33,7 +34,10 @@ builder.Services.AddGraphQLServer()
         options.EnforceCostLimits = true;
         options.ApplyCostDefaults = true;
         options.DefaultResolverCost = 10.0;
-    });
+    })
+    .AddType<AuthorFilterType>()
+    .AddType<LiteratureDirectionFilterType>();
+
 
 builder.Services.AddControllers(options =>
 {
@@ -73,8 +77,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseHttpsRedirection();
+/*
 var seeder = new DatabaseSeeder(app.Services);
 await seeder.SeedAsync();
+*/
 
 app.UseCors(policy =>
     policy.WithOrigins("http://localhost:4200", "https://localhost:5003")
