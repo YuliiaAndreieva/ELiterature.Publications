@@ -1,14 +1,14 @@
 ﻿using Data.Entities.Enums;
 
-namespace Core.Dtos.Writers;
+namespace Core.Dtos.Photo;
 
-public class WriterPhotoDto
+public class AuthorPhotoDto
 {
-    public long Id { get; set; }
-    
-    public PhotoType Type { get; set; }
-    
     public string PhotoUrl { get; set; }
-    
+
+    public long Id { get; set; }
+
+    public PhotoType Type { get; set; }
+
     public string? Quote { get; set; }
 }

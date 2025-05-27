@@ -29,4 +29,16 @@
       <ProjectReference Include="..\Data\Data.csproj" />
     </ItemGroup>
 
+
+
+
+
+
+
+    <ItemGroup>
+      <Folder Include="Configs\Constants\" />
+    </ItemGroup>
+
+
+
 </Project>

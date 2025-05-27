@@ -3,7 +3,11 @@ using API.Graph.Filters;
 using API.Graph.Queries;
 using API.Graph.Types;
 using API.Graph.Types.Enums;
+using Core.Interfaces.Services;
+using Core.Services;
+using Core.Settings;
 using Data.Repositories;
+using Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -11,7 +15,7 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddStorage(builder.Configuration);
 builder.Services.AddGraphQLServer()
-    .AddQueryType<AuthorQuery>()
+    .AddQueryType<RootQuery>()
     .AddType<AuthorType>()
     .AddType<PublicationType>()
     .AddType<LiteratureDirectionType>()
@@ -46,7 +50,17 @@ builder.Services.AddControllers(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddLogging();
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+builder.Services.AddScoped<IAuthorService, AuthorService>();
+builder.Services.AddScoped<IPhotoService, PhotoService>();
+builder.Services.AddScoped<ILiteratureDirectionService, LiteratureDirectionService>();
+builder.Services.AddScoped<IOccupationService, OccupationService>();
 builder.Services.AddScoped<IAuthorsRepository, AuthorsRepository>();
+builder.Services.AddScoped<IAuthorPhotoRepository, AuthorPhotoRepository>();
+builder.Services.AddScoped<ILiteratureDirectionRepository, LiteratureDirectionRepository>();
+builder.Services.AddScoped<IOccupationRepository, OccupationRepository>();
+builder.Services.AddScoped<IPublicationRepository, PublicationRepository>();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -74,13 +88,14 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    });
 }
 app.UseHttpsRedirection();
-/*
-var seeder = new DatabaseSeeder(app.Services);
-await seeder.SeedAsync();
-*/
+/*var seeder = new DatabaseSeeder(app.Services);
+await seeder.SeedAsync();*/
 
 app.UseCors(policy =>
     policy.WithOrigins("http://localhost:4200", "https://localhost:5003")

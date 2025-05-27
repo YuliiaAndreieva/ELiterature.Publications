@@ -9,6 +9,6 @@
       <ProjectReference Include="..\Data\Data.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Services\" />
+      <PackageReference Include="CloudinaryDotNet" Version="1.27.5" />
     </ItemGroup>
 </Project>
