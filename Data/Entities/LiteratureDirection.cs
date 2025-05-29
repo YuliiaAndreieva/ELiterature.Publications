@@ -8,11 +8,11 @@ public class LiteratureDirection
     
     public required string Description { get; set; }
     
-    public uint StartCentury { get; set; }
+    public int StartCentury { get; set; }
     
-    public uint? EndCentury { get; set; }
+    public int? EndCentury { get; set; }
     
-    public IEnumerable<Writer> Writers { get; set; } = new List<Writer>();
+    public IEnumerable<Author> Authors { get; set; } = new List<Author>();
     
     public IEnumerable<Publication> Publications { get; set; } = new List<Publication>();
 }

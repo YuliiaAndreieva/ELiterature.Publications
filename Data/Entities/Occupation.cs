@@ -6,5 +6,5 @@ public class Occupation
     
     public required string Title { get; set; } 
     
-    public IEnumerable<Writer> Writers { get; set; } = new List<Writer>();
+    public IEnumerable<Author> Authors { get; set; } = new List<Author>();
 }

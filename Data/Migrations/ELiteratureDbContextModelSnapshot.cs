@@ -22,6 +22,101 @@ namespace Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("AuthorLiteratureDirection", b =>
+                {
+                    b.Property<long>("AuthorsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("LiteratureDirectionId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("AuthorsId", "LiteratureDirectionId");
+
+                    b.HasIndex("LiteratureDirectionId");
+
+                    b.ToTable("AuthorLiteratureDirection");
+                });
+
+            modelBuilder.Entity("AuthorOccupation", b =>
+                {
+                    b.Property<long>("AuthorsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("OccupationsId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("AuthorsId", "OccupationsId");
+
+                    b.HasIndex("OccupationsId");
+
+                    b.ToTable("AuthorOccupation");
+                });
+
+            modelBuilder.Entity("AuthorOrganization", b =>
+                {
+                    b.Property<long>("AuthorsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("OrganizationsId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("AuthorsId", "OrganizationsId");
+
+                    b.HasIndex("OrganizationsId");
+
+                    b.ToTable("AuthorOrganization");
+                });
+
+            modelBuilder.Entity("AuthorPublication", b =>
+                {
+                    b.Property<long>("AuthorsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PublicationsId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("AuthorsId", "PublicationsId");
+
+                    b.HasIndex("PublicationsId");
+
+                    b.ToTable("AuthorPublication");
+                });
+
+            modelBuilder.Entity("Data.Entities.Author", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Biography")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly?>("DateOfDeath")
+                        .HasColumnType("date");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MiddleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Authors");
+                });
+
             modelBuilder.Entity("Data.Entities.LiteratureDirection", b =>
                 {
                     b.Property<long>("Id")
@@ -34,11 +129,11 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("EndCentury")
-                        .HasColumnType("bigint");
+                    b.Property<int?>("EndCentury")
+                        .HasColumnType("int");
 
-                    b.Property<long>("StartCentury")
-                        .HasColumnType("bigint");
+                    b.Property<int>("StartCentury")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -171,41 +266,6 @@ namespace Data.Migrations
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("Data.Entities.Writer", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Biography")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateOnly>("DateOfBirth")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly?>("DateOfDeath")
-                        .HasColumnType("date");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MiddleName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Writers");
-                });
-
             modelBuilder.Entity("LiteratureDirectionPublication", b =>
                 {
                     b.Property<long>("LiteratureDirectionId")
@@ -219,51 +279,6 @@ namespace Data.Migrations
                     b.HasIndex("PublicationsId");
 
                     b.ToTable("LiteratureDirectionPublication");
-                });
-
-            modelBuilder.Entity("LiteratureDirectionWriter", b =>
-                {
-                    b.Property<long>("LiteratureDirectionId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("WritersId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("LiteratureDirectionId", "WritersId");
-
-                    b.HasIndex("WritersId");
-
-                    b.ToTable("LiteratureDirectionWriter");
-                });
-
-            modelBuilder.Entity("OccupationWriter", b =>
-                {
-                    b.Property<long>("OccupationsId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("WritersId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("OccupationsId", "WritersId");
-
-                    b.HasIndex("WritersId");
-
-                    b.ToTable("OccupationWriter");
-                });
-
-            modelBuilder.Entity("OrganizationWriter", b =>
-                {
-                    b.Property<long>("OrganizationsId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("WritersId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("OrganizationsId", "WritersId");
-
-                    b.HasIndex("WritersId");
-
-                    b.ToTable("OrganizationWriter");
                 });
 
             modelBuilder.Entity("PublicationTag", b =>
@@ -281,19 +296,19 @@ namespace Data.Migrations
                     b.ToTable("PublicationTag");
                 });
 
-            modelBuilder.Entity("PublicationWriter", b =>
+            modelBuilder.Entity("Data.Entities.AuthorPhoto", b =>
                 {
-                    b.Property<long>("PublicationsId")
+                    b.HasBaseType("Data.Entities.Photo");
+
+                    b.Property<long>("AuthorId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("WritersId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("Quote")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("PublicationsId", "WritersId");
+                    b.HasIndex("AuthorId");
 
-                    b.HasIndex("WritersId");
-
-                    b.ToTable("PublicationWriter");
+                    b.HasDiscriminator().HasValue("WriterPhoto");
                 });
 
             modelBuilder.Entity("Data.Entities.PublicationPhoto", b =>
@@ -308,19 +323,64 @@ namespace Data.Migrations
                     b.HasDiscriminator().HasValue("PublicationPhoto");
                 });
 
-            modelBuilder.Entity("Data.Entities.WriterPhoto", b =>
+            modelBuilder.Entity("AuthorLiteratureDirection", b =>
                 {
-                    b.HasBaseType("Data.Entities.Photo");
+                    b.HasOne("Data.Entities.Author", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<string>("Quote")
-                        .HasColumnType("nvarchar(max)");
+                    b.HasOne("Data.Entities.LiteratureDirection", null)
+                        .WithMany()
+                        .HasForeignKey("LiteratureDirectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.Property<long>("WriterId")
-                        .HasColumnType("bigint");
+            modelBuilder.Entity("AuthorOccupation", b =>
+                {
+                    b.HasOne("Data.Entities.Author", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasIndex("WriterId");
+                    b.HasOne("Data.Entities.Occupation", null)
+                        .WithMany()
+                        .HasForeignKey("OccupationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.HasDiscriminator().HasValue("WriterPhoto");
+            modelBuilder.Entity("AuthorOrganization", b =>
+                {
+                    b.HasOne("Data.Entities.Author", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.Entities.Organization", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AuthorPublication", b =>
+                {
+                    b.HasOne("Data.Entities.Author", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.Entities.Publication", null)
+                        .WithMany()
+                        .HasForeignKey("PublicationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("LiteratureDirectionPublication", b =>
@@ -334,51 +394,6 @@ namespace Data.Migrations
                     b.HasOne("Data.Entities.Publication", null)
                         .WithMany()
                         .HasForeignKey("PublicationsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("LiteratureDirectionWriter", b =>
-                {
-                    b.HasOne("Data.Entities.LiteratureDirection", null)
-                        .WithMany()
-                        .HasForeignKey("LiteratureDirectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Data.Entities.Writer", null)
-                        .WithMany()
-                        .HasForeignKey("WritersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("OccupationWriter", b =>
-                {
-                    b.HasOne("Data.Entities.Occupation", null)
-                        .WithMany()
-                        .HasForeignKey("OccupationsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Data.Entities.Writer", null)
-                        .WithMany()
-                        .HasForeignKey("WritersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("OrganizationWriter", b =>
-                {
-                    b.HasOne("Data.Entities.Organization", null)
-                        .WithMany()
-                        .HasForeignKey("OrganizationsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Data.Entities.Writer", null)
-                        .WithMany()
-                        .HasForeignKey("WritersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -398,19 +413,15 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PublicationWriter", b =>
+            modelBuilder.Entity("Data.Entities.AuthorPhoto", b =>
                 {
-                    b.HasOne("Data.Entities.Publication", null)
-                        .WithMany()
-                        .HasForeignKey("PublicationsId")
+                    b.HasOne("Data.Entities.Author", "Author")
+                        .WithMany("Photos")
+                        .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Data.Entities.Writer", null)
-                        .WithMany()
-                        .HasForeignKey("WritersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("Data.Entities.PublicationPhoto", b =>
@@ -424,23 +435,12 @@ namespace Data.Migrations
                     b.Navigation("Publication");
                 });
 
-            modelBuilder.Entity("Data.Entities.WriterPhoto", b =>
-                {
-                    b.HasOne("Data.Entities.Writer", "Writer")
-                        .WithMany("Photos")
-                        .HasForeignKey("WriterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Writer");
-                });
-
-            modelBuilder.Entity("Data.Entities.Publication", b =>
+            modelBuilder.Entity("Data.Entities.Author", b =>
                 {
                     b.Navigation("Photos");
                 });
 
-            modelBuilder.Entity("Data.Entities.Writer", b =>
+            modelBuilder.Entity("Data.Entities.Publication", b =>
                 {
                     b.Navigation("Photos");
                 });
