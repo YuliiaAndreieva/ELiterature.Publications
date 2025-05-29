@@ -60,6 +60,9 @@ builder.Services.AddScoped<IAuthorPhotoRepository, AuthorPhotoRepository>();
 builder.Services.AddScoped<ILiteratureDirectionRepository, LiteratureDirectionRepository>();
 builder.Services.AddScoped<IOccupationRepository, OccupationRepository>();
 builder.Services.AddScoped<IPublicationRepository, PublicationRepository>();
+builder.Services.AddScoped<ITagRepository, TagRepository>();
+builder.Services.AddScoped<ITagService, TagService>();
+builder.Services.AddScoped<IPublicationService, PublicationService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

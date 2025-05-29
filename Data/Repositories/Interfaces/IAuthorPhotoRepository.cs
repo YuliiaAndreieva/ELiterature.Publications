@@ -11,4 +11,8 @@ public interface IAuthorPhotoRepository
 
     Task DeleteAsync(
         long photoId);
+
+    Task<List<PublicationPhoto>> GetByPublicationIdAsync(long pubId);
+
+    Task<PublicationPhoto> AddAsync(PublicationPhoto photo);
 }

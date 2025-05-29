@@ -16,11 +16,11 @@ public class Publication
     
     public required string Text { get; set; }
 
-    public IEnumerable<Author> Authors { get; set; } = new List<Author>();
+    public ICollection<Author> Authors { get; set; } = new List<Author>();
 
-    public IEnumerable<LiteratureDirection> LiteratureDirection { get; set; } = new List<LiteratureDirection>();
+    public ICollection<LiteratureDirection> LiteratureDirection { get; set; } = new List<LiteratureDirection>();
 
-    public IEnumerable<Tag> Tags { get; set; } = new List<Tag>();
+    public ICollection<Tag> Tags { get; set; } = new List<Tag>();
 
-    public IEnumerable<PublicationPhoto> Photos { get; set; } = new List<PublicationPhoto>();
+    public ICollection<PublicationPhoto> Photos { get; set; } = new List<PublicationPhoto>();
 }

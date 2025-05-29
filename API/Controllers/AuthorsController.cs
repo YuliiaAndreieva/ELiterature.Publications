@@ -1,5 +1,6 @@
 ﻿using Core.Dtos.Author;
 using Core.Interfaces.Services;
+using Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -13,6 +14,13 @@ public class AuthorsController : ControllerBase
     public AuthorsController(IAuthorService authorsService)
     {
         _authorsService = authorsService;
+    }
+    
+    [HttpGet]
+    public IEnumerable<AuthorSelectDto> GetAll()
+    {
+        var list = _authorsService.GetAllForSelectAsync();
+        return list.ToList();
     }
 
     [HttpPost]

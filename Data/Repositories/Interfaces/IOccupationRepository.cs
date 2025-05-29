@@ -8,5 +8,5 @@ public interface IOccupationRepository
 
     Task<List<Occupation>> GetOccupationsByIdAsync(List<long> ids);
 
-    Task CreateAsync(Occupation occupation);
+    Task<Occupation> CreateAsync(Occupation occupation);
 }

@@ -14,4 +14,8 @@ public interface IAuthorsRepository
     Task<Author?> UpdateAsync(Author author);
 
     Task DeleteAsync(Author author);
+
+    IEnumerable<Author> GetAllAsyncAsEnumerable();
+
+    Task<List<Author>> GetAuthorsByIdsAsync(List<long> ids);
 }

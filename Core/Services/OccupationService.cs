@@ -23,7 +23,7 @@ public class OccupationService : IOccupationService
             Title = dto.Title
         };
 
-        await  _occupationRepository.CreateAsync(occupation);
-        return dto;
+        var entity = await  _occupationRepository.CreateAsync(occupation);
+        return new OccupationCreateDto() {Id = entity.Id, Title = entity.Title};
     }
 }

@@ -19,12 +19,27 @@ public class AuthorPhotoRepository : IAuthorPhotoRepository
         await _dbContext.SaveChangesAsync();
         return photo;
     }
+    
+    public async Task<PublicationPhoto> AddAsync(PublicationPhoto photo)
+    {
+        _dbContext.Photos.Add(photo);
+        await _dbContext.SaveChangesAsync();
+        return photo;
+    }
 
     public async Task<List<AuthorPhoto>> GetByAuthorIdAsync(long authorId)
     {
         return await _dbContext.Photos
             .OfType<AuthorPhoto>()
             .Where(p => p.AuthorId == authorId)
+            .ToListAsync();
+    }
+    
+    public async Task<List<PublicationPhoto>> GetByPublicationIdAsync(long pubId)
+    {
+        return await _dbContext.Photos
+            .OfType<PublicationPhoto>()
+            .Where(p => p.PublicationId == pubId)
             .ToListAsync();
     }
 

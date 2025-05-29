@@ -116,4 +116,24 @@ public class AuthorService : IAuthorService
         await _authorsRepository.DeleteAsync(author);
         return true;
     }
+
+    public IEnumerable<AuthorSelectDto> GetAllForSelectAsync()
+    {
+        var authors =  _authorsRepository.GetAllAsync();
+        return  authors.Select(a => new AuthorSelectDto
+        {
+            Id = a.Id,
+            FirstName = a.FirstName,
+            LastName = a.LastName,
+            MiddleName = a.MiddleName
+        });
+    }
+}
+
+public class AuthorSelectDto
+{
+    public long Id { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string MiddleName { get; set; }
 }

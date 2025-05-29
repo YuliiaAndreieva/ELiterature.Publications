@@ -29,6 +29,11 @@ public class AuthorsRepository : IAuthorsRepository
         return _dbContext.Authors;
     }
     
+    public IEnumerable<Author> GetAllAsyncAsEnumerable()
+    {
+        return  _dbContext.Authors;
+    }
+    
     public async Task<Author> CreateAsync(Author author)
     {
         _dbContext.Authors.Add(author);
@@ -47,5 +52,12 @@ public class AuthorsRepository : IAuthorsRepository
     {
         _dbContext.Authors.Remove(author);
         await _dbContext.SaveChangesAsync();
+    }
+    
+    public async Task<List<Author>> GetAuthorsByIdsAsync(List<long> ids)
+    {
+        return await _dbContext.Authors
+            .Where(d => ids.Contains(d.Id))
+            .ToListAsync();
     }
 }

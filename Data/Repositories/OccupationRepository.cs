@@ -25,9 +25,10 @@ public class OccupationRepository : IOccupationRepository
             .ToListAsync();
     }
     
-    public async Task CreateAsync(Occupation occupation)
+    public async Task<Occupation> CreateAsync(Occupation occupation)
     {
         _dbContext.Occupations.Add(occupation);
         await _dbContext.SaveChangesAsync();
+        return occupation;
     }
 }
