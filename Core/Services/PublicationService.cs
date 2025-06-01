@@ -27,6 +27,11 @@ public class PublicationService : IPublicationService
         _tagRepository = tagRepository;
     }
 
+    public IEnumerable<Publication> GetAllPublicationsAsync()
+    {
+        return _publicationRepository.GetAllAsync().ToList();
+    }
+
     public async Task<UpdatePublicationDto?> UpdateAsync(long id, UpdatePublicationDto dto)
     {
         var publication = await _publicationRepository.GetByIdAsync(id);

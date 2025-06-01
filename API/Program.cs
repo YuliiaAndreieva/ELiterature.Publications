@@ -64,22 +64,22 @@ builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IPublicationService, PublicationService>();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+/*builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.Authority = "https://localhost:5002";
         options.Audience = "api";
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true,
+            ValidateIssuer = false,
             ValidateAudience = false,
             ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Convert.FromBase64String("R1cnMNZ4VmqXy968Bv52vCIY3iS4+VicrY1YvEAHGts="))
+            ValidateIssuerSigningKey = false,
+            /*IssuerSigningKey = new SymmetricSecurityKey(
+                Convert.FromBase64String("R1cnMNZ4VmqXy968Bv52vCIY3iS4+VicrY1YvEAHGts="))#1#
         };
     });
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization();*/
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()

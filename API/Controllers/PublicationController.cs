@@ -1,5 +1,6 @@
 ﻿using Core.Dtos;
 using Core.Interfaces.Services;
+using Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -14,6 +15,13 @@ public class PublicationController : Controller
         IPublicationService publicationService)
     {
         _publicationService = publicationService;
+    }
+    
+    [HttpGet]
+    public ActionResult<IEnumerable<Publication>> GetAllPublications()
+    {
+        var publications = _publicationService.GetAllPublicationsAsync();
+        return Ok(publications);
     }
 
     [HttpPost]
