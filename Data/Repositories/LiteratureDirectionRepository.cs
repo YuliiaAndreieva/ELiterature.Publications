@@ -30,4 +30,10 @@ public class LiteratureDirectionRepository : ILiteratureDirectionRepository
         _dbContext.LiteratureDirections.Add(direction);
         await _dbContext.SaveChangesAsync();
     }
+    
+    public IQueryable<LiteratureDirection> GetByIdAsyncAsQueryable(long id)
+    {
+        return _dbContext.LiteratureDirections
+            .Where(w => w.Id == id);
+    }
 }

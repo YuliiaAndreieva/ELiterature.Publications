@@ -1,6 +1,8 @@
 ﻿using Core.Dtos;
+using Core.Dtos.Moodboard;
 using Core.Interfaces.Services;
 using Data.Entities;
+using Data.Entities.Enums;
 using Data.Repositories.Interfaces;
 
 namespace Core.Services;
@@ -147,5 +149,17 @@ public class PublicationService : IPublicationService
         }
 
         return dto;
+    }
+    
+    public async Task<IEnumerable<PublicationMoodboardDto>> GetRandomPublicationsForMoodboardAsync(int count)
+    {
+        var publications = await _publicationRepository.GetRandomPublicationsWithImagesAsync(count);
+        
+        return publications.Select(p => new PublicationMoodboardDto
+        {
+            Id = p.Id,
+            Title = p.Title,
+            ImageUrl = p.Photos.FirstOrDefault(ph => ph.Type == PhotoType.AssociatedPhoto)?.PhotoUrl ?? string.Empty,
+        });
     }
 }

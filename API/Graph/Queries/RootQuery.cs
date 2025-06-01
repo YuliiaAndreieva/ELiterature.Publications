@@ -26,6 +26,11 @@ public class RootQuery
     public IQueryable<LiteratureDirection> GetLiteratureDirections([Service]ILiteratureDirectionRepository repository) => 
         repository.GetAllAsync();
     
+    [UseProjection]
+    [GraphQLName("literatureDirection")]
+    public IQueryable<LiteratureDirection> GetDirection([Service]ILiteratureDirectionRepository repository, long id) => 
+        repository.GetByIdAsyncAsQueryable(id);
+    
     [UsePaging]
     [UseProjection]
     [UseFiltering]
@@ -42,4 +47,5 @@ public class RootQuery
     [GraphQLName("tags")]
     public IQueryable<TagEntity> GetTags([Service]ITagRepository repository) => 
         repository.GetAllAsync();
+    
 } 

@@ -1,5 +1,6 @@
 ﻿using Data.Context;
 using Data.Entities;
+using Data.Entities.Enums;
 using Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -59,5 +60,15 @@ public class PublicationRepository : IPublicationRepository
     {
         _dbContext.Publications.Remove(author);
         await _dbContext.SaveChangesAsync();
+    }
+    
+    public async Task<IEnumerable<Publication>> GetRandomPublicationsWithImagesAsync(int count)
+    {
+        return await _dbContext.Publications
+            .Include(p => p.Photos.Where(ph => ph.Type == PhotoType.AssociatedPhoto))
+            .Where(p => p.Photos.Any(ph => ph.Type == PhotoType.AssociatedPhoto))
+            .OrderBy(p => Guid.NewGuid())
+            .Take(count)
+            .ToListAsync();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Core.Dtos;
+using Core.Dtos.Moodboard;
 using Core.Interfaces.Services;
 using Data.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -37,5 +38,20 @@ public class PublicationController : Controller
         var updated = await _publicationService.UpdateAsync(id, dto);
         if (updated == null) return NotFound();
         return Ok(updated);
+    }
+    
+    [HttpGet("moodboard")]
+    public async Task<ActionResult<IEnumerable<PublicationMoodboardDto>>> GetMoodboardPublications(
+        [FromQuery] int count = 6)
+    {
+        try
+        {
+            var publications = await _publicationService.GetRandomPublicationsForMoodboardAsync(count);
+            return Ok(publications);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Помилка при отриманні публікацій для moodboard");
+        }
     }
 }

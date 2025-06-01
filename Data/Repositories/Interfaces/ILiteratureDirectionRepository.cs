@@ -8,4 +8,7 @@ public interface ILiteratureDirectionRepository
     Task<List<LiteratureDirection>> GetDirectionsByIdsAsync(List<long> ids);
 
     Task CreateAsync(LiteratureDirection direction);
+
+    IQueryable<LiteratureDirection> GetByIdAsyncAsQueryable(
+        long id);
 }

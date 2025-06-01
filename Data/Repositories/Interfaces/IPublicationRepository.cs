@@ -17,4 +17,7 @@ public interface IPublicationRepository
 
     Task DeleteAsync(
         Publication author);
+
+    Task<IEnumerable<Publication>> GetRandomPublicationsWithImagesAsync(
+        int count);
 }
