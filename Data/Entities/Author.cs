@@ -1,6 +1,6 @@
 ﻿namespace Data.Entities;
 
-public class Writer
+public class Author
 {
     public long Id { get; set; }
     
@@ -16,7 +16,7 @@ public class Writer
     
     public string Biography { get; set; } = string.Empty;
 
-    public IEnumerable<Publication> Publications { get; set; } = new List<Publication>();
+    public  ICollection<Publication> Publications { get; set; }
 
     public IEnumerable<LiteratureDirection> LiteratureDirection { get; set; } = new List<LiteratureDirection>();
 
@@ -24,5 +24,5 @@ public class Writer
 
     public IEnumerable<Organization> Organizations { get; set; } = new List<Organization>();
     
-    public IEnumerable<WriterPhoto> Photos { get; set; } = new List<WriterPhoto>();
+    public IEnumerable<AuthorPhoto> Photos { get; set; } = new List<AuthorPhoto>();
 }

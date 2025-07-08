@@ -11,7 +11,7 @@ public class PhotoEntityConfiguration : IEntityTypeConfiguration<Photo>
     {
         builder
             .HasDiscriminator<string>("Discriminator")
-            .HasValue<WriterPhoto>("WriterPhoto")
+            .HasValue<AuthorPhoto>("WriterPhoto")
             .HasValue<PublicationPhoto>("PublicationPhoto");
     }
 }
