@@ -1,4 +1,5 @@
-﻿using Core.Dtos;
+﻿using Core.Common;
+using Core.Dtos;
 using Core.Dtos.Moodboard;
 using Data.Entities;
 
@@ -6,9 +7,11 @@ namespace Core.Interfaces.Services;
 
 public interface IPublicationService
 {
-    Task<UpdatePublicationDto?> UpdateAsync(long id, UpdatePublicationDto dto);
+    Task<Result<CreatePublicationDto>> CreatePublicationAsync(CreatePublicationDto dto);
 
-    Task<CreatePublicationDto> CreateAsync(CreatePublicationDto dto);
+    Task<Result<UpdatePublicationDto>> UpdatePublicationAsync(
+        long id,
+        UpdatePublicationDto dto);
 
     IEnumerable<Publication> GetAllPublicationsAsync();
     

@@ -1,9 +1,12 @@
-﻿using Core.Dtos;
+﻿using Core.Common;
+using Core.Dtos;
 using Core.Dtos.Moodboard;
+using Core.Dtos.Photo;
 using Core.Interfaces.Services;
 using Data.Entities;
 using Data.Entities.Enums;
 using Data.Repositories.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Core.Services;
 
@@ -14,92 +17,306 @@ public class PublicationService : IPublicationService
     private readonly IPublicationRepository _publicationRepository;
     private readonly IAuthorPhotoRepository _photoRepository;
     private readonly ITagRepository _tagRepository;
+    private readonly ILogger<PublicationService> _logger;
 
     public PublicationService(
         ILiteratureDirectionRepository directionRepository,
         IPublicationRepository publicationRepository,
         IAuthorPhotoRepository photoRepository,
         IAuthorsRepository authorsRepository,
-        ITagRepository tagRepository)
+        ITagRepository tagRepository,
+        ILogger<PublicationService> logger)
     {
         _directionRepository = directionRepository; 
         _publicationRepository = publicationRepository;
         _photoRepository = photoRepository;
         _authorsRepository = authorsRepository;
         _tagRepository = tagRepository;
+        _logger = logger;
     }
 
     public IEnumerable<Publication> GetAllPublicationsAsync()
     {
-        return _publicationRepository.GetAllAsync().ToList();
+        try
+        {
+            return _publicationRepository.GetAllAsync().ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting all publications");
+            return Enumerable.Empty<Publication>();
+        }
     }
 
     public async Task<UpdatePublicationDto?> UpdateAsync(long id, UpdatePublicationDto dto)
     {
-        var publication = await _publicationRepository.GetByIdAsync(id);
-        if (publication == null) return null;
+        var result = await UpdatePublicationAsync(id, dto);
+        return result.IsSuccess ? result.Value : null;
+    }
 
-        publication.Title = dto.Title;
-        publication.Description = dto.Description;
-        publication.PublicationYear = dto.PublicationYear;
-        publication.Type = dto.Type;
-        publication.Text = dto.Text;
-        
-        // Authors
-        var currentAuthorIds = publication.Authors.Select(a => a.Id).ToList();
-        var newAuthorIds = dto.AuthorIds;
-        var authorsToRemove = publication.Authors.Where(a => !newAuthorIds.Contains(a.Id)).ToList();
-        foreach (var author in authorsToRemove)
-            publication.Authors.Remove(author);
-        var authorsToAddIds = newAuthorIds.Except(currentAuthorIds).ToList();
-        if (authorsToAddIds.Any())
+    public async Task<CreatePublicationDto> CreateAsync(CreatePublicationDto dto)
+    {
+        var result = await CreatePublicationAsync(dto);
+        return result.IsSuccess ? result.Value! : throw new InvalidOperationException(result.Error);
+    }
+
+    public async Task<IEnumerable<PublicationMoodboardDto>> GetRandomPublicationsForMoodboardAsync(int count)
+    {
+        try
         {
-            var authorsToAdd = await _authorsRepository.GetAuthorsByIdsAsync(authorsToAddIds);
-            foreach (var author in authorsToAdd)
-                publication.Authors.Add(author);
-        }
-
-// Directions
-        var currentDirIds = publication.LiteratureDirection.Select(d => d.Id).ToList();
-        var newDirIds = dto.DirectionIds.Select(Convert.ToInt64).ToList();
-        var dirsToRemove = publication.LiteratureDirection.Where(d => !newDirIds.Contains(d.Id)).ToList();
-        foreach (var dir in dirsToRemove)
-            publication.LiteratureDirection.Remove(dir);
-        var dirsToAddIds = newDirIds.Except(currentDirIds).ToList();
-        if (dirsToAddIds.Any())
-        {
-            var dirsToAdd = await _directionRepository.GetDirectionsByIdsAsync(dirsToAddIds);
-            foreach (var dir in dirsToAdd)
-                publication.LiteratureDirection.Add(dir);
-        }
-
-// Tags
-        var currentTagIds = publication.Tags.Select(t => t.Id).ToList();
-        var newTagIds = dto.TagIds.Select(Convert.ToInt64).ToList();
-        var tagsToRemove = publication.Tags.Where(t => !newTagIds.Contains(t.Id)).ToList();
-        foreach (var tag in tagsToRemove)
-            publication.Tags.Remove(tag);
-        var tagsToAddIds = newTagIds.Except(currentTagIds).ToList();
-        if (tagsToAddIds.Any())
-        {
-            var tagsToAdd = await _tagRepository.GetTagsByIdsAsync(tagsToAddIds);
-            foreach (var tag in tagsToAdd)
-                publication.Tags.Add(tag);
-        }
-
-
-        if (dto.Photos != null)
-        {
-            var existingPhotos = await _photoRepository.GetByPublicationIdAsync(publication.Id);
-
-            var dtoIds = dto.Photos.Select(p => p.Id).ToList();
-            var photosToDelete = existingPhotos.Where(p => !dtoIds.Contains(p.Id)).ToList();
-            foreach (var photo in photosToDelete)
+            var publications = await _publicationRepository.GetRandomPublicationsWithImagesAsync(count);
+            
+            return publications.Select(p => new PublicationMoodboardDto
             {
-                await _photoRepository.DeleteAsync(photo.Id);
+                Id = p.Id,
+                Title = p.Title,
+                ImageUrl = p.Photos.FirstOrDefault(ph => ph.Type == PhotoType.AssociatedPhoto)?.PhotoUrl ?? string.Empty,
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting random publications for moodboard");
+            return Enumerable.Empty<PublicationMoodboardDto>();
+        }
+    }
+
+    /// <summary>
+    /// Creates publication
+    /// </summary>
+    public async Task<Result<CreatePublicationDto>> CreatePublicationAsync(CreatePublicationDto dto)
+    {
+        try
+        {
+            if (dto == null)
+                return Result<CreatePublicationDto>.Failure("DTO cannot be null");
+
+            var publication = new Publication
+            {
+                Title = dto.Title,
+                Description = dto.Description,
+                PublicationYear = dto.PublicationYear,
+                Type = dto.Type,
+                Text = dto.Text,
+                Authors = await _authorsRepository.GetAuthorsByIdsAsync(dto.AuthorIds),
+                LiteratureDirection = await _directionRepository.GetDirectionsByIdsAsync(dto.DirectionIds),
+                Tags = await _tagRepository.GetTagsByIdsAsync(dto.TagIds)
+            };
+
+            await _publicationRepository.CreateAsync(publication);
+            
+            if (dto.Photos != null)
+            {
+                var photosResult = await AddPhotosAsync(publication, dto.Photos);
+                if (!photosResult.IsSuccess)
+                    return Result<CreatePublicationDto>.Failure(photosResult.Error!);
             }
 
-            foreach (var photoDto in dto.Photos)
+            dto.Id = publication.Id;
+
+            return Result<CreatePublicationDto>.Success(dto);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating publication");
+            return Result<CreatePublicationDto>.Failure(ex);
+        }
+    }
+
+    /// <summary>
+    /// Updates publication
+    /// </summary>
+    public async Task<Result<UpdatePublicationDto>> UpdatePublicationAsync(long id, UpdatePublicationDto dto)
+    {
+        try
+        {
+            if (dto == null)
+                return Result<UpdatePublicationDto>.Failure("DTO cannot be null");
+                
+            var publication = await _publicationRepository.GetByIdAsync(id);
+            if (publication == null)
+                return Result<UpdatePublicationDto>.Failure($"Publication with id {id} not found");
+                
+            var updateResult = await UpdatePublicationFieldsAsync(publication, dto);
+            if (!updateResult.IsSuccess)
+                return Result<UpdatePublicationDto>.Failure(updateResult.Error!);
+
+            var authorsResult = await UpdateAuthorsAsync(publication, dto.AuthorIds);
+            if (!authorsResult.IsSuccess)
+                return Result<UpdatePublicationDto>.Failure(authorsResult.Error!);
+
+            var directionsResult = await UpdateDirectionsAsync(publication, dto.DirectionIds);
+            if (!directionsResult.IsSuccess)
+                return Result<UpdatePublicationDto>.Failure(directionsResult.Error!);
+
+            var tagsResult = await UpdateTagsAsync(publication, dto.TagIds);
+            if (!tagsResult.IsSuccess)
+                return Result<UpdatePublicationDto>.Failure(tagsResult.Error!);
+
+            if (dto.Photos != null)
+            {
+                var photosResult = await UpdatePhotosAsync(publication, dto.Photos);
+                if (!photosResult.IsSuccess)
+                    return Result<UpdatePublicationDto>.Failure(photosResult.Error!);
+            }
+
+            await _publicationRepository.UpdateAsync(publication);
+            return Result<UpdatePublicationDto>.Success(dto);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating publication with id {PublicationId}", id);
+            return Result<UpdatePublicationDto>.Failure(ex);
+        }
+    }
+
+    /// <summary>
+    /// Updates the main fields of the publication entity from the DTO
+    /// </summary>
+    private Task<Result> UpdatePublicationFieldsAsync(Publication publication, UpdatePublicationDto dto)
+    {
+        try
+        {
+            if (publication == null || dto == null)
+                return Task.FromResult(Result.Failure("Publication or DTO cannot be null"));
+
+            publication.Title = dto.Title;
+            publication.Description = dto.Description;
+            publication.PublicationYear = dto.PublicationYear;
+            publication.Type = dto.Type;
+            publication.Text = dto.Text;
+
+            return Task.FromResult(Result.Success());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating publication fields");
+            return Task.FromResult(Result.Failure(ex));
+        }
+    }
+
+    /// <summary>
+    /// Updates the authors collection of the publication
+    /// </summary>
+    private async Task<Result> UpdateAuthorsAsync(Publication publication, List<long> newAuthorIds)
+    {
+        try
+        {
+            if (publication == null || newAuthorIds == null)
+                return Result.Failure("Publication or author IDs cannot be null");
+
+            var currentAuthorIds = publication.Authors.Select(a => a.Id).ToHashSet();
+            var newAuthorIdsSet = newAuthorIds.ToHashSet();
+
+            // Remove authors not in new list
+            foreach (var author in publication.Authors.Where(a => !newAuthorIdsSet.Contains(a.Id)).ToList())
+                publication.Authors.Remove(author);
+
+            // Add new authors
+            var authorsToAddIds = newAuthorIdsSet.Except(currentAuthorIds).ToList();
+            if (authorsToAddIds.Count > 0)
+            {
+                var authorsToAdd = await _authorsRepository.GetAuthorsByIdsAsync(authorsToAddIds);
+                foreach (var author in authorsToAdd)
+                    publication.Authors.Add(author);
+            }
+
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating authors");
+            return Result.Failure(ex);
+        }
+    }
+
+    /// <summary>
+    /// Updates the literature directions collection of the publication
+    /// </summary>
+    private async Task<Result> UpdateDirectionsAsync(Publication publication, List<long> newDirectionIds)
+    {
+        try
+        {
+            if (publication == null || newDirectionIds == null)
+                return Result.Failure("Publication or direction IDs cannot be null");
+
+            var currentDirIds = publication.LiteratureDirection.Select(d => d.Id).ToHashSet();
+            var newDirIds = newDirectionIds.Select(Convert.ToInt64).ToHashSet();
+
+            foreach (var dir in publication.LiteratureDirection.Where(d => !newDirIds.Contains(d.Id)).ToList())
+                publication.LiteratureDirection.Remove(dir);
+
+            var dirsToAddIds = newDirIds.Except(currentDirIds).ToList();
+            if (dirsToAddIds.Count > 0)
+            {
+                var dirsToAdd = await _directionRepository.GetDirectionsByIdsAsync(dirsToAddIds);
+                foreach (var dir in dirsToAdd)
+                    publication.LiteratureDirection.Add(dir);
+            }
+
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating directions");
+            return Result.Failure(ex);
+        }
+    }
+
+    /// <summary>
+    /// Updates the tags collection of the publication
+    /// </summary>
+    private async Task<Result> UpdateTagsAsync(Publication publication, List<long> newTagIds)
+    {
+        try
+        {
+            if (publication == null || newTagIds == null)
+                return Result.Failure("Publication or tag IDs cannot be null");
+
+            var currentTagIds = publication.Tags.Select(t => t.Id).ToHashSet();
+            var newIds = newTagIds.Select(Convert.ToInt64).ToHashSet();
+
+            foreach (var tag in publication.Tags.Where(t => !newIds.Contains(t.Id)).ToList())
+                publication.Tags.Remove(tag);
+
+            var tagsToAddIds = newIds.Except(currentTagIds).ToList();
+            if (tagsToAddIds.Count > 0)
+            {
+                var tagsToAdd = await _tagRepository.GetTagsByIdsAsync(tagsToAddIds);
+                foreach (var tag in tagsToAdd)
+                    publication.Tags.Add(tag);
+            }
+
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating tags");
+            return Result.Failure(ex);
+        }
+    }
+
+    /// <summary>
+    /// Updates the photos collection of the publication
+    /// </summary>
+    private async Task<Result> UpdatePhotosAsync(Publication publication, List<PublicationPhotoDto> photos)
+    {
+        try
+        {
+            if (publication == null || photos == null)
+                return Result.Failure("Publication or photos cannot be null");
+
+            var existingPhotos = await _photoRepository.GetByPublicationIdAsync(publication.Id);
+            var dtoIds = photos.Select(p => p.Id).ToHashSet();
+
+            // Delete photos not in DTO
+            foreach (var photo in existingPhotos)
+            {
+                if (!dtoIds.Contains(photo.Id))
+                    await _photoRepository.DeleteAsync(photo.Id);
+            }
+
+            // Add new photos
+            foreach (var photoDto in photos)
             {
                 if (photoDto.Id == 0)
                 {
@@ -112,31 +329,27 @@ public class PublicationService : IPublicationService
                     await _photoRepository.AddAsync(newPhoto);
                 }
             }
-        }
 
-        await _publicationRepository.UpdateAsync(publication);
-        return dto;
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating photos");
+            return Result.Failure(ex);
+        }
     }
 
-    public async Task<CreatePublicationDto> CreateAsync(CreatePublicationDto dto)
+    /// <summary>
+    /// Adds photos to publication
+    /// </summary>
+    private async Task<Result> AddPhotosAsync(Publication publication, List<PublicationPhotoDto> photos)
     {
-        var publication = new Publication
+        try
         {
-            Title = dto.Title,
-            Description = dto.Description,
-            PublicationYear = dto.PublicationYear,
-            Type = dto.Type,
-            Text = dto.Text,
-            Authors = await _authorsRepository.GetAuthorsByIdsAsync(dto.AuthorIds),
-            LiteratureDirection = await _directionRepository.GetDirectionsByIdsAsync(dto.DirectionIds),
-            Tags = await _tagRepository.GetTagsByIdsAsync(dto.TagIds)
-        };
+            if (publication == null || photos == null)
+                return Result.Failure("Publication or photos cannot be null");
 
-        await _publicationRepository.CreateAsync(publication);
-        
-        if (dto.Photos != null)
-        {
-            foreach (var photoDto in dto.Photos)
+            foreach (var photoDto in photos)
             {
                 var publicationPhoto = new PublicationPhoto
                 {
@@ -146,20 +359,13 @@ public class PublicationService : IPublicationService
                 };
                 await _photoRepository.AddAsync(publicationPhoto);
             }
-        }
 
-        return dto;
-    }
-    
-    public async Task<IEnumerable<PublicationMoodboardDto>> GetRandomPublicationsForMoodboardAsync(int count)
-    {
-        var publications = await _publicationRepository.GetRandomPublicationsWithImagesAsync(count);
-        
-        return publications.Select(p => new PublicationMoodboardDto
+            return Result.Success();
+        }
+        catch (Exception ex)
         {
-            Id = p.Id,
-            Title = p.Title,
-            ImageUrl = p.Photos.FirstOrDefault(ph => ph.Type == PhotoType.AssociatedPhoto)?.PhotoUrl ?? string.Empty,
-        });
+            _logger.LogError(ex, "Error adding photos");
+            return Result.Failure(ex);
+        }
     }
 }
