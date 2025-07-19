@@ -5,6 +5,7 @@ namespace Core.Dtos;
 
 public class CreatePublicationDto
 {
+    public long Id { get; set; }
     public required string Title { get; set; }
     public required string Description { get; set; }
     public DateOnly? PublicationYear { get; set; }

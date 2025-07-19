@@ -15,9 +15,10 @@ public class TagService : ITagService
         _tagRepository = tagRepository;
     }
     
-    public async Task<TagCreateDto> CreateAsync(
-        TagCreateDto dto)
+    public async Task<TagCreateDto> CreateAsync(TagCreateDto dto)
     {
+        if (dto == null)
+            throw new ArgumentNullException(nameof(dto));
         var occupation = new Tag()
         {
             Title = dto.Title

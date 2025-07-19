@@ -3,12 +3,15 @@ using API.Graph.Filters;
 using API.Graph.Queries;
 using API.Graph.Types;
 using API.Graph.Types.Enums;
+using API.Filters;
 using Core.Interfaces.Services;
 using Core.Services;
 using Core.Settings;
+using Data.Context;
 using Data.Repositories;
 using Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
@@ -46,6 +49,7 @@ builder.Services.AddGraphQLServer()
 builder.Services.AddControllers(options =>
 {
     options.RespectBrowserAcceptHeader = true;
+    options.Filters.Add<GlobalExceptionFilter>();
 }).AddXmlSerializerFormatters();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -99,6 +103,40 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 /*var seeder = new DatabaseSeeder(app.Services);
 await seeder.SeedAsync();*/
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ELiteratureDbContext>();
+    Console.WriteLine($"[PROGRAM] DB CONNECTION: {db.Database.GetConnectionString()}");
+    Console.WriteLine("[PROGRAM] MIGRATION START");
+    try
+    {
+        // Додаємо retry logic для міграцій
+        var maxRetries = 3;
+        var retryDelay = TimeSpan.FromSeconds(5);
+        
+        for (int attempt = 1; attempt <= maxRetries; attempt++)
+        {
+            try
+            {
+                Console.WriteLine($"[PROGRAM] Migration attempt {attempt}/{maxRetries}");
+                db.Database.Migrate();
+                Console.WriteLine("[PROGRAM] MIGRATION END");
+                break;
+            }
+            catch (Exception ex) when (attempt < maxRetries)
+            {
+                Console.WriteLine($"[PROGRAM] Migration attempt {attempt} failed: {ex.Message}");
+                Console.WriteLine($"[PROGRAM] Waiting {retryDelay.TotalSeconds} seconds before retry...");
+                Thread.Sleep(retryDelay);
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[PROGRAM] MIGRATION ERROR: {ex}");
+        throw;
+    }
+}
 
 app.UseCors(policy =>
     policy.WithOrigins("http://localhost:4200", "https://localhost:5003")
@@ -112,3 +150,5 @@ app.MapGraphQL();
 app.MapGet("/playground", () => Results.Redirect("/graphql"));
 app.MapControllers();
 app.Run();
+
+public partial class Program { }

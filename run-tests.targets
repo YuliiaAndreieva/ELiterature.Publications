@@ -1,0 +1,33 @@
+<Project>
+
+  <Target Name="RunAllTests">
+    <Message Text="Running all tests..." Importance="high" />
+    <Exec Command="dotnet test --logger &quot;console;verbosity=detailed&quot; --verbosity normal" />
+  </Target>
+
+  <Target Name="RunIntegrationTests">
+    <Message Text="Running integration tests..." Importance="high" />
+    <Exec Command="dotnet test IntegrationTests --logger &quot;console;verbosity=detailed&quot; --verbosity normal" />
+  </Target>
+
+  <Target Name="RunUnitTests">
+    <Message Text="Running unit tests..." Importance="high" />
+    <Exec Command="dotnet test UnitTests --logger &quot;console;verbosity=detailed&quot; --verbosity normal" />
+  </Target>
+
+  <Target Name="RunFilteredTests" DependsOnTargets="RunIntegrationTests">
+    <Message Text="Running filtered tests..." Importance="high" />
+    <Exec Command="dotnet test IntegrationTests --filter &quot;TagControllerIntegrationTests&quot; --logger &quot;console;verbosity=detailed&quot; --verbosity normal" />
+  </Target>
+
+  <Target Name="RunTestsWithCoverage">
+    <Message Text="Running tests with coverage..." Importance="high" />
+    <Exec Command="dotnet test --collect:&quot;XPlat Code Coverage&quot; --logger &quot;console;verbosity=detailed&quot; --verbosity normal" />
+  </Target>
+  
+  <Target Name="RunTestsVerbose">
+    <Message Text="Running tests with verbose output..." Importance="high" />
+    <Exec Command="dotnet test --logger &quot;console;verbosity=detailed&quot; --verbosity detailed" />
+  </Target>
+  
+</Project> 

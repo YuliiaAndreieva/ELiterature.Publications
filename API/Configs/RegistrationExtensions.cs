@@ -15,7 +15,13 @@ public static class RegistrationExtensions
 
         serviceCollection.AddDbContext<ELiteratureDbContext>(options =>
         {
-            options.UseSqlServer(connectionString)
+            options.UseSqlServer(connectionString, sqlServerOptions =>
+            {
+                sqlServerOptions.EnableRetryOnFailure(
+                    maxRetryCount: 3,
+                    maxRetryDelay: TimeSpan.FromSeconds(5),
+                    errorNumbersToAdd: null);
+            })
                 .LogTo(Console.WriteLine, LogLevel.Information)
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors();

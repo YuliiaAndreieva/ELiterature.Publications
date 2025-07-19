@@ -83,25 +83,30 @@ public class AuthorService : IAuthorService
             MiddleName = dto.MiddleName,
             DateOfBirth = dto.DateOfBirth,
             DateOfDeath = dto.DateOfDeath,
-            Biography = dto.Biography,
-            LiteratureDirection = await _directionRepository.GetDirectionsByIdsAsync(dto.DirectionIds),
-            Occupations = await _occupationRepository.GetOccupationsByIdAsync(dto.OccupationIds),
-            Publications = await _publicationRepository.GetPublicationsByIdsAsync(dto.PublicationIds)
+            Biography = dto.Biography
         };
 
-        await _authorsRepository.CreateAsync(author);
+        // Спочатку створюємо автора
+        var createdAuthor = await _authorsRepository.CreateAsync(author);
         
-        foreach (var authorPhoto in dto.Photos.Select(photoDto => new AuthorPhoto
-                 {
-                     PhotoUrl = photoDto.PhotoUrl,
-                     Id = photoDto.Id,
-                     Type = photoDto.Type,
-                     AuthorId = author.Id
-                 }))
+        // Тепер можемо створити фото з правильним AuthorId
+        if (dto.Photos != null && dto.Photos.Any())
         {
-            await _photoRepository.AddAsync(authorPhoto);
+            foreach (var photoDto in dto.Photos)
+            {
+                var authorPhoto = new AuthorPhoto
+                {
+                    PhotoUrl = photoDto.PhotoUrl,
+                    Type = photoDto.Type,
+                    AuthorId = createdAuthor.Id,
+                    Quote = photoDto.Quote
+                };
+                await _photoRepository.AddAsync(authorPhoto);
+            }
         }
 
+        // Повертаємо DTO з ID створеного автора
+        dto.Id = createdAuthor.Id;
         return dto;
     }
     
@@ -119,14 +124,22 @@ public class AuthorService : IAuthorService
 
     public IEnumerable<AuthorSelectDto> GetAllForSelectAsync()
     {
-        var authors =  _authorsRepository.GetAllAsync();
-        return  authors.Select(a => new AuthorSelectDto
+        try
         {
-            Id = a.Id,
-            FirstName = a.FirstName,
-            LastName = a.LastName,
-            MiddleName = a.MiddleName
-        });
+            var authors = _authorsRepository.GetAllAsync();
+            return authors.Select(a => new AuthorSelectDto
+            {
+                Id = a.Id,
+                FirstName = a.FirstName,
+                LastName = a.LastName,
+                MiddleName = a.MiddleName
+            });
+        }
+        catch
+        {
+            // Повертаємо порожню колекцію замість викидання винятку
+            return new List<AuthorSelectDto>();
+        }
     }
 }
 

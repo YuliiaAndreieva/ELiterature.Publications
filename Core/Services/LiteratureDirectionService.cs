@@ -17,6 +17,8 @@ public class LiteratureDirectionService : ILiteratureDirectionService
 
     public async Task<LiteratureDirection> CreateAsync(LiteratureDirectionCreateDto dto)
     {
+        if (dto == null)
+            throw new ArgumentNullException(nameof(dto));
         var direction = new LiteratureDirection
         {
             Title = dto.Title,
