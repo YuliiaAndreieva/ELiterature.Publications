@@ -1,0 +1,32 @@
+<Project>
+  
+  <PropertyGroup>
+    <TestLogger>console;verbosity=detailed</TestLogger>
+    <TestVerbosity>normal</TestVerbosity>
+    <TestCollector>XPlat Code Coverage</TestCollector>
+    <TestResultsDirectory>TestResults</TestResultsDirectory>
+    <TestResultsFileName>test-results.trx</TestResultsFileName>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'IntegrationTests'">
+    <TestTimeout>300</TestTimeout>
+    <TestParallelizationMode>Collections</TestParallelizationMode>
+    <TestMaxCpuCount>2</TestMaxCpuCount>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'UnitTests'">
+    <TestTimeout>60</TestTimeout>
+    <TestParallelizationMode>All</TestParallelizationMode>
+    <TestMaxCpuCount>4</TestMaxCpuCount>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <CollectCoverage>true</CollectCoverage>
+    <CoverletOutputFormat>opencover</CoverletOutputFormat>
+    <CoverletOutput>$(TestResultsDirectory)/coverage.xml</CoverletOutput>
+    <ExcludeByFile>**/*.cs</ExcludeByFile>
+    <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
+    <Exclude>[*]*.Program,[*]*.Startup</Exclude>
+  </PropertyGroup>
+
+</Project> 
