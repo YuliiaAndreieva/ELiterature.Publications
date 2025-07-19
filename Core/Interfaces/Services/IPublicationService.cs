@@ -14,6 +14,7 @@ public interface IPublicationService
         UpdatePublicationDto dto);
 
     IEnumerable<Publication> GetAllPublicationsAsync();
-    
-    Task<IEnumerable<PublicationMoodboardDto>> GetRandomPublicationsForMoodboardAsync(int count);
+
+    Task<Result<Publication>> GetPublicationByIdAsync(
+        long id);
 }

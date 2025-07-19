@@ -1,10 +1,8 @@
 ﻿using Core.Common;
 using Core.Dtos;
-using Core.Dtos.Moodboard;
 using Core.Dtos.Photo;
 using Core.Interfaces.Services;
 using Data.Entities;
-using Data.Entities.Enums;
 using Data.Repositories.Interfaces;
 using Microsoft.Extensions.Logging;
 
@@ -47,36 +45,18 @@ public class PublicationService : IPublicationService
             return Enumerable.Empty<Publication>();
         }
     }
-
-    public async Task<UpdatePublicationDto?> UpdateAsync(long id, UpdatePublicationDto dto)
-    {
-        var result = await UpdatePublicationAsync(id, dto);
-        return result.IsSuccess ? result.Value : null;
-    }
-
-    public async Task<CreatePublicationDto> CreateAsync(CreatePublicationDto dto)
-    {
-        var result = await CreatePublicationAsync(dto);
-        return result.IsSuccess ? result.Value! : throw new InvalidOperationException(result.Error);
-    }
-
-    public async Task<IEnumerable<PublicationMoodboardDto>> GetRandomPublicationsForMoodboardAsync(int count)
+    
+    public async Task<Result<Publication>> GetPublicationByIdAsync(long id)
     {
         try
         {
-            var publications = await _publicationRepository.GetRandomPublicationsWithImagesAsync(count);
-            
-            return publications.Select(p => new PublicationMoodboardDto
-            {
-                Id = p.Id,
-                Title = p.Title,
-                ImageUrl = p.Photos.FirstOrDefault(ph => ph.Type == PhotoType.AssociatedPhoto)?.PhotoUrl ?? string.Empty,
-            });
+            var publication = await _publicationRepository.GetByIdAsync(id);
+            return Result<Publication>.Success(publication);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting random publications for moodboard");
-            return Enumerable.Empty<PublicationMoodboardDto>();
+            _logger.LogError(ex, "Error getting publication");
+            return Result<Publication>.Failure("Can not get publication");
         }
     }
 
@@ -87,7 +67,7 @@ public class PublicationService : IPublicationService
     {
         try
         {
-            if (dto == null)
+            if (dto is null)
                 return Result<CreatePublicationDto>.Failure("DTO cannot be null");
 
             var publication = new Publication
@@ -104,7 +84,7 @@ public class PublicationService : IPublicationService
 
             await _publicationRepository.CreateAsync(publication);
             
-            if (dto.Photos != null)
+            if (dto.Photos.Any())
             {
                 var photosResult = await AddPhotosAsync(publication, dto.Photos);
                 if (!photosResult.IsSuccess)
@@ -129,7 +109,7 @@ public class PublicationService : IPublicationService
     {
         try
         {
-            if (dto == null)
+            if (dto is null)
                 return Result<UpdatePublicationDto>.Failure("DTO cannot be null");
                 
             var publication = await _publicationRepository.GetByIdAsync(id);
@@ -152,7 +132,7 @@ public class PublicationService : IPublicationService
             if (!tagsResult.IsSuccess)
                 return Result<UpdatePublicationDto>.Failure(tagsResult.Error!);
 
-            if (dto.Photos != null)
+            if (dto.Photos.Any())
             {
                 var photosResult = await UpdatePhotosAsync(publication, dto.Photos);
                 if (!photosResult.IsSuccess)
@@ -315,7 +295,6 @@ public class PublicationService : IPublicationService
                     await _photoRepository.DeleteAsync(photo.Id);
             }
 
-            // Add new photos
             foreach (var photoDto in photos)
             {
                 if (photoDto.Id == 0)
