@@ -1,5 +1,8 @@
 ﻿using Data.Context;
 using Microsoft.EntityFrameworkCore;
+using Data.Repositories;
+using Core.Services;
+using Data.Repositories.Interfaces;
 
 namespace API.Configs;
 
@@ -26,5 +29,8 @@ public static class RegistrationExtensions
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors();
         });
+
+        serviceCollection.AddScoped<IRawSqlRepository, RawSqlRepository>();
+        serviceCollection.AddScoped<RawSqlService>();
     }
 }
