@@ -86,10 +86,8 @@ public class AuthorService : IAuthorService
             Biography = dto.Biography
         };
 
-        // Спочатку створюємо автора
         var createdAuthor = await _authorsRepository.CreateAsync(author);
         
-        // Тепер можемо створити фото з правильним AuthorId
         if (dto.Photos != null && dto.Photos.Any())
         {
             foreach (var photoDto in dto.Photos)
@@ -105,7 +103,6 @@ public class AuthorService : IAuthorService
             }
         }
 
-        // Повертаємо DTO з ID створеного автора
         dto.Id = createdAuthor.Id;
         return dto;
     }
@@ -116,8 +113,6 @@ public class AuthorService : IAuthorService
         if (author == null)
             return false;
         
-        // await _photoRepository.DeleteByAuthorIdAsync(id);
-
         await _authorsRepository.DeleteAsync(author);
         return true;
     }
@@ -137,16 +132,7 @@ public class AuthorService : IAuthorService
         }
         catch
         {
-            // Повертаємо порожню колекцію замість викидання винятку
             return new List<AuthorSelectDto>();
         }
     }
-}
-
-public class AuthorSelectDto
-{
-    public long Id { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string MiddleName { get; set; }
 }
