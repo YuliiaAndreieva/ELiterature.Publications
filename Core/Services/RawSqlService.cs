@@ -63,33 +63,6 @@ public class RawSqlService
         return await _rawSqlRepository.GroupByAsync(sql);
     }
     
-    public async Task<int> GetPublicationCountBySpecificTypeAsync(int type)
-    {
-        const string sql = @"
-            SELECT COUNT(*) as Count
-            FROM Publications
-            WHERE Type = @Type";
-
-        _logger.LogInformation("Getting publication count for specific type {Type}", type);
-        try
-        {
-            var result = await _rawSqlRepository.QueryAsync<dynamic>(sql, new { Type = type });
-            var first = result.FirstOrDefault();
-            int count = 0;
-            if (first != null)
-            {
-                count = (int)first.Count;
-            }
-            _logger.LogInformation("Found {Count} publications for type {Type}", count, type);
-            return count;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error getting publication count for type {Type}. SQL: {Sql}", type, sql);
-            throw;
-        }
-    }
-    
     public async Task<int> UpdatePublicationAsync(long publicationId, string title, string description, int type, string text, DateOnly? publicationYear)
     {
         const string sql = @"
